@@ -1,26 +1,40 @@
 class Stack:
-    def __init__(self):
-        self.items = []
+    def __init__(self, capacity=4):
+        self.capacity = capacity
+        self.size = 0
+        self.array = [None] * capacity
+
+    def is_empty(self):
+        return self.size == 0
 
     def push(self, item):
-        self.items.append(item)
+        if self.size == self.capacity:
+            self._resize()
+
+        self.array[self.size] = item
+        self.size += 1
 
     def pop(self):
         if self.is_empty():
-            raise IndexError("Pop from empty stack")
-        return self.items.pop()
+            raise IndexError("Stack is empty")
+
+        self.size -= 1
+        item = self.array[self.size]
+        self.array[self.size] = None
+        return item
 
     def peek(self):
         if self.is_empty():
-            raise IndexError("Peek from empty stack")
-        return self.items[-1]
+            raise IndexError("Stack is empty")
 
-    def is_empty(self):
-        return len(self.items) == 0
-        
-        
-d=Stack()
-d.push(9)
-d.push(4)
-print(d.items)
-print(d.peek())
+        return self.array[self.size - 1]
+
+    def _resize(self):
+        new_capacity = self.capacity * 2
+        new_array = [None] * new_capacity
+
+        for i in range(self.size):
+            new_array[i] = self.array[i]
+
+        self.array = new_array
+        self.capacity = new_capacity
